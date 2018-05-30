@@ -5,11 +5,6 @@
  */
 package chatapp;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -17,7 +12,7 @@ import javax.swing.JOptionPane;
  * @author igor
  */
 public class WindowServer extends javax.swing.JFrame {
-
+    private Server server;
     /**
      * Creates new form WindowServer
      */
@@ -89,37 +84,17 @@ public class WindowServer extends javax.swing.JFrame {
 
     private void btnStartServerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnStartServerActionPerformed
         // TODO add your handling code here:
-        ServerSocket serverSocket = null;
-        try{
-            int port = Integer.parseInt(txtPort.getText());
-            System.out.println("port = " + port);
-            serverSocket = new ServerSocket(port);
-            Socket socket = serverSocket.accept();
-            JOptionPane.showMessageDialog(this, "Connection successfull",
-                    "Success", JOptionPane.INFORMATION_MESSAGE);
-            
-        }
-        catch(NumberFormatException ex){
-            JOptionPane.showMessageDialog(this, "Incorrect port",
+        if(this.server == null){
+            int port;
+            try{
+                port = Integer.parseInt(txtPort.getText());
+                this.server = new Server(port, this);
+            } catch(NumberFormatException ex){
+                JOptionPane.showMessageDialog(this, "Incorrect port",
                     "Failure", JOptionPane.ERROR_MESSAGE);
-        }
-        catch(IOException ex){
-            JOptionPane.showMessageDialog(this, "Could not start server: "
-                                          + ex.getMessage(), "Failure",
-                                          JOptionPane.ERROR_MESSAGE);
-        }
-        
-        try {
-            if(serverSocket != null){
-                serverSocket.close();
-                System.out.println("Server socket closing");
             }
-        } catch (IOException ex) {
-            Logger.getLogger(WindowServer.class.getName())
-                    .log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error",
-                                          JOptionPane.ERROR_MESSAGE);
         }
+        this.server.start();
     }//GEN-LAST:event_btnStartServerActionPerformed
 
     /**

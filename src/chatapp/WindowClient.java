@@ -5,12 +5,14 @@
  */
 package chatapp;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author igor
  */
 public class WindowClient extends javax.swing.JFrame {
-
+    private Client client;
     /**
      * Creates new form WindowClient
      */
@@ -33,6 +35,10 @@ public class WindowClient extends javax.swing.JFrame {
         txtServerURL = new javax.swing.JTextField();
         txtPort = new javax.swing.JTextField();
         btnConnect = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        textAreaChat = new javax.swing.JTextArea();
+        txtMessage = new javax.swing.JTextField();
+        btnSendMessage = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -53,6 +59,23 @@ public class WindowClient extends javax.swing.JFrame {
         txtPort.setText("3333");
 
         btnConnect.setText("Connect");
+        btnConnect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConnectActionPerformed(evt);
+            }
+        });
+
+        textAreaChat.setColumns(20);
+        textAreaChat.setRows(5);
+        jScrollPane1.setViewportView(textAreaChat);
+
+        txtMessage.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtMessageKeyReleased(evt);
+            }
+        });
+
+        btnSendMessage.setText("Send");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -61,6 +84,7 @@ public class WindowClient extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -73,8 +97,12 @@ public class WindowClient extends javax.swing.JFrame {
                                     .addComponent(jLabel2)
                                     .addGap(65, 65, 65)
                                     .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(btnConnect))
-                        .addGap(0, 154, Short.MAX_VALUE)))
+                            .addComponent(btnConnect)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnSendMessage)))
+                        .addGap(0, 2, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -92,7 +120,13 @@ public class WindowClient extends javax.swing.JFrame {
                     .addComponent(txtServerURL, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(btnConnect)
-                .addContainerGap(200, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtMessage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnSendMessage))
+                .addContainerGap())
         );
 
         pack();
@@ -100,8 +134,37 @@ public class WindowClient extends javax.swing.JFrame {
 
     private void txtServerURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtServerURLActionPerformed
         // TODO add your handling code here:
+        
     }//GEN-LAST:event_txtServerURLActionPerformed
 
+    private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
+        // TODO add your handling code here:
+        try{
+            int port = Integer.parseInt(txtPort.getText());
+            String url = txtServerURL.getText();
+            if(this.client == null){
+                this.client = new Client(port, url, this);
+                this.client.start();
+            }
+            /*JOptionPane.showMessageDialog(this, "Successfully connected ",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);*/
+        } catch(NumberFormatException ex){
+            JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(),
+                    "Could not connect to server", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnConnectActionPerformed
+
+    private void txtMessageKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMessageKeyReleased
+        // TODO add your handling code here:
+        
+        if(evt.getKeyCode() == 10){
+            System.out.println(txtMessage.getText());
+        }
+    }//GEN-LAST:event_txtMessageKeyReleased
+
+    public void onMessageReceived(final String message){
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -137,9 +200,13 @@ public class WindowClient extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConnect;
+    private javax.swing.JButton btnSendMessage;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea textAreaChat;
+    private javax.swing.JTextField txtMessage;
     private javax.swing.JTextField txtPort;
     private javax.swing.JTextField txtServerURL;
     // End of variables declaration//GEN-END:variables
