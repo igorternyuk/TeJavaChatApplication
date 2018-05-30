@@ -31,9 +31,15 @@ public class Server extends Thread{
         ServerSocket serverSocket = null;
         try{
             serverSocket = new ServerSocket(this.port);
-            Socket socket = serverSocket.accept();
-            JOptionPane.showMessageDialog(this.frame, "Connection successfull",
-                    "Success", JOptionPane.INFORMATION_MESSAGE);
+            while(true){
+                Socket socket = serverSocket.accept();
+                Connection connection = new Connection(socket);
+                ConnectionManager.getInstance().newConnection(connection);
+                connection.start();
+            }
+            //JOptionPane.showMessageDialog(this.frame, "Connection successfull",
+            //        "Success", JOptionPane.INFORMATION_MESSAGE);
+            
             
         }
         catch(IOException ex){

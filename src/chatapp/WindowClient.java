@@ -163,7 +163,7 @@ public class WindowClient extends javax.swing.JFrame {
     }//GEN-LAST:event_txtMessageKeyReleased
 
     public void onMessageReceived(final String message){
-        
+        textAreaChat.append(message);
     }
     /**
      * @param args the command line arguments
