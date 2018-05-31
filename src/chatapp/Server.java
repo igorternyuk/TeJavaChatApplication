@@ -46,8 +46,7 @@ public class Server extends Thread{
             JOptionPane.showMessageDialog(this.frame, "Could not start server: "
                                           + ex.getMessage(), "Failure",
                                           JOptionPane.ERROR_MESSAGE);
-        }
-        
+        }        
         try {
             if(serverSocket != null){
                 serverSocket.close();

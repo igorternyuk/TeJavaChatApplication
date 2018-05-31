@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,15 +48,19 @@ public class Connection extends Thread {
                 switch(code){
                     case 1:
                         this.nickname = message;
+                        ConnectionManager.getInstance().sendData(code, message);
                         break;
                     case 2:
                         message = String.format("<%s>: %s", nickname, message);
+                        ConnectionManager.getInstance().sendData(code, message);
                         break;
+                    case 3:
+                        ConnectionManager.getInstance().disconnect(this);
                     default:
                         break;
                         
                 }
-                ConnectionManager.getInstance().sendData(code, message);
+                
             } catch (IOException ex) {
                 Logger.getLogger(Connection.class.getName())
                         .log(Level.SEVERE, null, ex);
@@ -71,5 +76,31 @@ public class Connection extends Thread {
             Logger.getLogger(Connection.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.socket);
+        hash = 97 * hash + Objects.hashCode(this.dis);
+        hash = 97 * hash + Objects.hashCode(this.dos);
+        hash = 97 * hash + Objects.hashCode(this.nickname);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        
+        final Connection other = (Connection) obj;
+        return Objects.equals(this.nickname, other.nickname)
+               || Objects.equals(this.socket, other.socket)
+               || Objects.equals(this.dis, other.dis)
+               || Objects.equals(this.dos, other.dos);
     }
 }

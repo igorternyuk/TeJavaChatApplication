@@ -84,6 +84,11 @@ public class WindowClient extends javax.swing.JFrame {
         });
 
         btnSendMessage.setText("Send");
+        btnSendMessage.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSendMessageActionPerformed(evt);
+            }
+        });
 
         jScrollPane2.setViewportView(nicknameList);
 
@@ -92,6 +97,7 @@ public class WindowClient extends javax.swing.JFrame {
         txtNickname.setText("Nick");
 
         btnDisconnect.setText("Disconnect");
+        btnDisconnect.setEnabled(false);
         btnDisconnect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnDisconnectActionPerformed(evt);
@@ -173,11 +179,9 @@ public class WindowClient extends javax.swing.JFrame {
 
     private void txtServerURLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtServerURLActionPerformed
         // TODO add your handling code here:
-        
     }//GEN-LAST:event_txtServerURLActionPerformed
 
     private void btnConnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectActionPerformed
-        // TODO add your handling code here:
         try{
             int port = Integer.parseInt(txtPort.getText());
             String url = txtServerURL.getText();
@@ -185,6 +189,8 @@ public class WindowClient extends javax.swing.JFrame {
             if(this.client == null){
                 this.client = new Client(port, url, nickname, this);
                 this.client.start();
+                btnDisconnect.setEnabled(true);
+                btnConnect.setEnabled(false);
             }
             /*JOptionPane.showMessageDialog(this, "Successfully connected ",
                     "Success", JOptionPane.INFORMATION_MESSAGE);*/
@@ -195,19 +201,36 @@ public class WindowClient extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConnectActionPerformed
 
     private void txtMessageKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMessageKeyReleased
-        // TODO add your handling code here:
-        
         if(evt.getKeyCode() == 10){
-            System.out.println(txtMessage.getText());
+            sendMessage();
+        }
+    }//GEN-LAST:event_txtMessageKeyReleased
+    
+    private void sendMessage(){
+        //System.out.println(txtMessage.getText());
+        String message = txtMessage.getText();
+        if(!message.isEmpty()){
             this.client.sendData(2, txtMessage.getText() + "\n");
             txtMessage.setText("");
         }
-    }//GEN-LAST:event_txtMessageKeyReleased
-
+    }
+    
     private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
-        // TODO add your handling code here:
-        
+        if(this.client != null){
+            this.client.sendData(3, "");
+            this.client.interrupt();
+            this.client = null;
+            this.listModel.removeAllElements();
+            this.textAreaChat.setText("");
+            this.txtMessage.setText("");
+        }
+        btnDisconnect.setEnabled(false);
+        btnConnect.setEnabled(true);
     }//GEN-LAST:event_btnDisconnectActionPerformed
+
+    private void btnSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendMessageActionPerformed
+        sendMessage();
+    }//GEN-LAST:event_btnSendMessageActionPerformed
 
     public void onMessageReceived(final String message){
         textAreaChat.append(message);
@@ -215,6 +238,10 @@ public class WindowClient extends javax.swing.JFrame {
     
     public void addNewPerson(final String nickname){
         listModel.addElement(nickname);
+    }
+    
+    public void removePerson(int pos){
+        listModel.remove(pos);
     }
     /**
      * @param args the command line arguments

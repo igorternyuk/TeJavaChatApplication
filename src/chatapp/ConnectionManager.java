@@ -36,4 +36,23 @@ public class ConnectionManager {
         });
         this.connections.add(connection);
     }
+    
+    public void disconnect(final Connection connection){
+        int posToRemove = -1;
+        for(int i = 0; i < this.connections.size(); ++i){
+            if(this.connections.get(i).equals(connection)){
+                posToRemove = i;
+                break;
+            }
+        }
+        
+        if(posToRemove != -1){
+            final int pos = posToRemove; 
+            this.connections.stream().filter(con -> !con.equals(connection))
+                    .forEach(con -> {
+                        con.sendData(3, "" + pos);
+                    });
+            this.connections.remove(pos);
+        }
+    }
 }

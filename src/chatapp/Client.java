@@ -65,6 +65,14 @@ public class Client extends Thread {
                     case 2:
                         this.wClient.onMessageReceived(message);
                         break;
+                    case 3:
+                        try {
+                            int pos = Integer.parseInt(message);
+                            this.wClient.removePerson(pos);
+                        } catch(NumberFormatException ex){
+                            Logger.getLogger(WindowClient.class.getName())
+                                  .log(Level.SEVERE, null, ex);
+                        }
                 }
                 
             }
