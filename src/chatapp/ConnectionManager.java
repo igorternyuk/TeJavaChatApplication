@@ -22,17 +22,18 @@ public class ConnectionManager {
         return instance;
     }
     
-    private ConnectionManager(){
-        
-    }
+    private ConnectionManager(){}
     
-    public void sendMessage(final String message){
-        this.connections.forEach((con) -> {
-            con.sendMessage(message);
+    public void sendData(final int code, final String message){
+        this.connections.forEach((Connection con) -> {
+            con.sendData(code, message);
         });
     }
     
-    public void newConnection(Connection connection){
+    public void newConnection(final Connection connection){
+        this.connections.forEach(c -> {
+            connection.sendData(1, c.getNickname());
+        });
         this.connections.add(connection);
     }
 }

@@ -20,28 +20,53 @@ import javax.swing.JOptionPane;
 public class Client extends Thread {
     private int port;
     private String url;
+    private String nickName;
     private WindowClient wClient;
     private Socket socket;
     private boolean isConnected;
     
-    public Client(int port, String url, WindowClient wClient) {
+    public Client(final int port, final String url, final String nickname,
+            WindowClient wClient) {
         this.port = port;
         this.url = url;
+        this.nickName = nickname;
         this.wClient = wClient;
+    }
+
+    public int getPort() {
+        return this.port;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public String getNickName() {
+        return this.nickName;
     }
     
     @Override
     public void run(){
        try{
             this.socket = new Socket(this.url, this.port);
-            JOptionPane.showMessageDialog(this.wClient, "Successfully connected ",
+            JOptionPane.showMessageDialog(this.wClient, "Successfully connected",
                     "Success", JOptionPane.INFORMATION_MESSAGE);
             DataInputStream dis = new DataInputStream(
                         this.socket.getInputStream());
             this.isConnected = this.socket.isConnected();
+            sendData(1, this.nickName);
             while(this.isConnected){
+                int code = dis.readInt();
                 String message = dis.readUTF();
-                this.wClient.onMessageReceived(message);
+                switch(code){
+                    case 1:
+                        this.wClient.addNewPerson(message);
+                        break;
+                    case 2:
+                        this.wClient.onMessageReceived(message);
+                        break;
+                }
+                
             }
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(this.wClient,
@@ -52,10 +77,11 @@ public class Client extends Thread {
         } 
     }
     
-    public void sendMessage(final String message){
+    public void sendData(final int code, final String message){
         try {
             DataOutputStream dos = new DataOutputStream(
                     this.socket.getOutputStream());
+            dos.writeInt(code);
             dos.writeUTF(message);
         } catch (IOException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
