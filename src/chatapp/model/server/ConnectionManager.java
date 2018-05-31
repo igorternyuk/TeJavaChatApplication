@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package chatapp;
+package chatapp.model.server;
 
 import java.util.ArrayList;
 
@@ -13,7 +8,7 @@ import java.util.ArrayList;
  */
 public class ConnectionManager {
     private static ConnectionManager instance = null;
-    private ArrayList<Connection> connections = new ArrayList<>();
+    private ArrayList<ConnectionThread> connections = new ArrayList<>();
     
     public static synchronized ConnectionManager getInstance(){
         if(instance == null){
@@ -25,19 +20,19 @@ public class ConnectionManager {
     private ConnectionManager(){}
     
     public void sendData(final int code, final String message){
-        this.connections.forEach((Connection con) -> {
-            con.sendData(code, message);
+        this.connections.forEach((ConnectionThread connection) -> {
+            connection.sendData(code, message);
         });
     }
     
-    public void newConnection(final Connection connection){
-        this.connections.forEach(c -> {
-            connection.sendData(1, c.getNickname());
+    public void newConnection(final ConnectionThread connection){
+        this.connections.forEach(conneciton -> {
+            connection.sendData(1, conneciton.getNickname());
         });
         this.connections.add(connection);
     }
     
-    public void disconnect(final Connection connection){
+    public void disconnect(final ConnectionThread connection){
         int posToRemove = -1;
         for(int i = 0; i < this.connections.size(); ++i){
             if(this.connections.get(i).equals(connection)){

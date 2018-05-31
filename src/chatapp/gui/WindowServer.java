@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapp;
+package chatapp.gui;
 
+import chatapp.model.server.Server;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,6 +19,7 @@ public class WindowServer extends javax.swing.JFrame {
      */
     public WindowServer() {
         initComponents();
+        super.setResizable(false);
     }
 
     /**
@@ -63,8 +65,8 @@ public class WindowServer extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnStartServer)
-                .addGap(26, 26, 26))
+                .addComponent(btnStartServer, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -76,7 +78,7 @@ public class WindowServer extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(txtPort, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnStartServer))
-                .addContainerGap(216, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -88,13 +90,13 @@ public class WindowServer extends javax.swing.JFrame {
             int port;
             try{
                 port = Integer.parseInt(txtPort.getText());
-                this.server = new Server(port, this);
+                this.server = new Server(port);
             } catch(NumberFormatException ex){
                 JOptionPane.showMessageDialog(this, "Incorrect port",
                     "Failure", JOptionPane.ERROR_MESSAGE);
             }
         }
-        this.server.start();
+        this.server.startServer();
     }//GEN-LAST:event_btnStartServerActionPerformed
 
     /**

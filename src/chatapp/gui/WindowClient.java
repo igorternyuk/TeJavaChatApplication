@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapp;
+package chatapp.gui;
 
+import chatapp.model.client.Client;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -187,13 +188,30 @@ public class WindowClient extends javax.swing.JFrame {
             String url = txtServerURL.getText();
             String nickname = txtNickname.getText();
             if(this.client == null){
-                this.client = new Client(port, url, nickname, this);
-                this.client.start();
+                this.client = new Client(port, url, nickname,
+                        (String nick) -> {
+                            java.awt.EventQueue.invokeLater(() -> {
+                                listModel.addElement(nick);
+                            });
+                        },
+                        (String message) -> {
+                            java.awt.EventQueue.invokeLater(() -> {
+                                textAreaChat.append(message);
+                            });
+                        },
+                        (Integer index) -> {
+                            java.awt.EventQueue.invokeLater(() -> {
+                                listModel.remove(index);
+                            });
+                            
+                        }
+                );
+                this.client.connect();
                 btnDisconnect.setEnabled(true);
                 btnConnect.setEnabled(false);
             }
-            /*JOptionPane.showMessageDialog(this, "Successfully connected ",
-                    "Success", JOptionPane.INFORMATION_MESSAGE);*/
+            JOptionPane.showMessageDialog(this, "Successfully connected ",
+                    "Success", JOptionPane.INFORMATION_MESSAGE);
         } catch(NumberFormatException ex){
             JOptionPane.showMessageDialog(this, "Error: " + ex.getMessage(),
                     "Could not connect to server", JOptionPane.ERROR_MESSAGE);
@@ -207,7 +225,6 @@ public class WindowClient extends javax.swing.JFrame {
     }//GEN-LAST:event_txtMessageKeyReleased
     
     private void sendMessage(){
-        //System.out.println(txtMessage.getText());
         String message = txtMessage.getText();
         if(!message.isEmpty()){
             this.client.sendData(2, txtMessage.getText() + "\n");
@@ -218,7 +235,7 @@ public class WindowClient extends javax.swing.JFrame {
     private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
         if(this.client != null){
             this.client.sendData(3, "");
-            this.client.interrupt();
+            this.client.disconnect();
             this.client = null;
             this.listModel.removeAllElements();
             this.textAreaChat.setText("");
@@ -232,7 +249,7 @@ public class WindowClient extends javax.swing.JFrame {
         sendMessage();
     }//GEN-LAST:event_btnSendMessageActionPerformed
 
-    public void onMessageReceived(final String message){
+    /*public void onMessageReceived(final String message){
         textAreaChat.append(message);
     }
     
@@ -242,7 +259,7 @@ public class WindowClient extends javax.swing.JFrame {
     
     public void removePerson(int pos){
         listModel.remove(pos);
-    }
+    }*/
     /**
      * @param args the command line arguments
      */

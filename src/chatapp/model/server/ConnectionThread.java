@@ -1,9 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package chatapp;
+package chatapp.model.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -17,20 +12,19 @@ import java.util.logging.Logger;
  *
  * @author igor
  */
-public class Connection extends Thread {
+public class ConnectionThread extends Thread {
     private Socket socket;
     private DataInputStream dis;
     private DataOutputStream dos;
     private String nickname = "";
 
-    public Connection(Socket socket) {
+    public ConnectionThread(Socket socket) {
         try {
             this.socket = socket;
             this.dis = new DataInputStream(socket.getInputStream());
             this.dos = new DataOutputStream(socket.getOutputStream());
-            //start();
         } catch (IOException ex) {
-            Logger.getLogger(Connection.class.getName()).log(Level.SEVERE,
+            Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE,
                     null, ex);
         }
     }
@@ -62,7 +56,7 @@ public class Connection extends Thread {
                 }
                 
             } catch (IOException ex) {
-                Logger.getLogger(Connection.class.getName())
+                Logger.getLogger(ConnectionThread.class.getName())
                         .log(Level.SEVERE, null, ex);
             }
         }
@@ -73,7 +67,7 @@ public class Connection extends Thread {
             this.dos.writeInt(code);
             this.dos.writeUTF(message);
         } catch (IOException ex) {
-            Logger.getLogger(Connection.class.getName())
+            Logger.getLogger(ConnectionThread.class.getName())
                     .log(Level.SEVERE, null, ex);
         }
     }
@@ -97,7 +91,7 @@ public class Connection extends Thread {
             return false;
         }
         
-        final Connection other = (Connection) obj;
+        final ConnectionThread other = (ConnectionThread) obj;
         return Objects.equals(this.nickname, other.nickname)
                || Objects.equals(this.socket, other.socket)
                || Objects.equals(this.dis, other.dis)

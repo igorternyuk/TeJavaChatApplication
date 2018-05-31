@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package chatapp;
+package chatapp.gui;
 
 /**
  *
@@ -77,8 +77,6 @@ public class MainWindow extends javax.swing.JFrame {
             wServer.setLocationRelativeTo(null);
             wServer.setVisible(true);
         });
-        
-        
     }//GEN-LAST:event_btnRunServerActionPerformed
 
     private void btnRunClientActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRunClientActionPerformed
