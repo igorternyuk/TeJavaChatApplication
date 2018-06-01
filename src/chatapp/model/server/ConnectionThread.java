@@ -18,7 +18,7 @@ public class ConnectionThread extends Thread {
     private DataOutputStream dos;
     private String nickname = "";
 
-    public ConnectionThread(Socket socket) {
+    public ConnectionThread(Socket socket) throws IOException {
         try {
             this.socket = socket;
             this.dis = new DataInputStream(socket.getInputStream());
@@ -26,6 +26,7 @@ public class ConnectionThread extends Thread {
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName()).log(Level.SEVERE,
                     null, ex);
+            throw ex;
         }
     }
 
@@ -62,13 +63,14 @@ public class ConnectionThread extends Thread {
         }
     }
     
-    public void sendData(final int code, final String message){
+    public void sendData(final int code, final String message) throws IOException{
         try {
             this.dos.writeInt(code);
             this.dos.writeUTF(message);
         } catch (IOException ex) {
             Logger.getLogger(ConnectionThread.class.getName())
                     .log(Level.SEVERE, null, ex);
+            throw ex;
         }
     }
 

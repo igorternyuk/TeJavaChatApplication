@@ -6,6 +6,8 @@
 package chatapp.gui;
 
 import chatapp.model.client.Client;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
@@ -22,6 +24,7 @@ public class WindowClient extends javax.swing.JFrame {
     public WindowClient() {
         initComponents();
         nicknameList.setModel(listModel);
+        textAreaChat.setEditable(false);
     }
 
     /**
@@ -225,41 +228,44 @@ public class WindowClient extends javax.swing.JFrame {
     }//GEN-LAST:event_txtMessageKeyReleased
     
     private void sendMessage(){
-        String message = txtMessage.getText();
-        if(!message.isEmpty()){
-            this.client.sendData(2, txtMessage.getText() + "\n");
-            txtMessage.setText("");
+        try{
+            String message = txtMessage.getText();
+            if(!message.isEmpty()){
+                this.client.sendData(2, txtMessage.getText() + "\n");
+                txtMessage.setText("");
+            }
+        }
+        catch(Exception ex){
+            Logger.getLogger(WindowClient.class.getName())
+                                      .log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
     
     private void btnDisconnectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDisconnectActionPerformed
-        if(this.client != null){
-            this.client.sendData(3, "");
-            this.client.disconnect();
-            this.client = null;
-            this.listModel.removeAllElements();
-            this.textAreaChat.setText("");
-            this.txtMessage.setText("");
+        try{
+            if(this.client != null){
+                this.client.sendData(3, "");
+                this.client.disconnect();
+                this.client = null;
+                this.listModel.removeAllElements();
+                this.textAreaChat.setText("");
+                this.txtMessage.setText("");
+            }
+            btnDisconnect.setEnabled(false);
+            btnConnect.setEnabled(true);
         }
-        btnDisconnect.setEnabled(false);
-        btnConnect.setEnabled(true);
+        catch(Exception ex){
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnDisconnectActionPerformed
 
     private void btnSendMessageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSendMessageActionPerformed
         sendMessage();
     }//GEN-LAST:event_btnSendMessageActionPerformed
 
-    /*public void onMessageReceived(final String message){
-        textAreaChat.append(message);
-    }
-    
-    public void addNewPerson(final String nickname){
-        listModel.addElement(nickname);
-    }
-    
-    public void removePerson(int pos){
-        listModel.remove(pos);
-    }*/
     /**
      * @param args the command line arguments
      */

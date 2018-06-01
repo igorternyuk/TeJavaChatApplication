@@ -79,21 +79,21 @@ public class Client {
                                 onPersonDisconnected.accept(pos);
                             }
                             catch(NumberFormatException ex){
-                                Logger.getLogger(WindowClient.class.getName())
+                                Logger.getLogger(Client.class.getName())
                                       .log(Level.SEVERE, null, ex);
                             }
                     }
 
                 }
             } catch (IOException ex) {
-                Logger.getLogger(WindowClient.class.getName())
+                Logger.getLogger(Client.class.getName())
                         .log(Level.SEVERE, null, ex);
             } 
         }    
     }
     
     
-    public void sendData(final int code, final String message){
+    public void sendData(final int code, final String message) throws IOException{
         if(this.socket != null){
             try{
                 DataOutputStream dos
@@ -104,6 +104,7 @@ public class Client {
             catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE,
                         null, ex);
+                throw ex;
             }
         }
     }

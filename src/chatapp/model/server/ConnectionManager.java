@@ -1,6 +1,9 @@
 package chatapp.model.server;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -21,13 +24,24 @@ public class ConnectionManager {
     
     public void sendData(final int code, final String message){
         this.connections.forEach((ConnectionThread connection) -> {
-            connection.sendData(code, message);
+            try {
+                connection.sendData(code, message);
+            } catch (IOException ex) {
+                Logger.getLogger(ConnectionManager.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
         });
+        
     }
     
     public void newConnection(final ConnectionThread connection){
         this.connections.forEach(conneciton -> {
-            connection.sendData(1, conneciton.getNickname());
+            try {
+                connection.sendData(1, conneciton.getNickname());
+            } catch (IOException ex) {
+                Logger.getLogger(ConnectionManager.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
         });
         this.connections.add(connection);
     }
@@ -45,7 +59,12 @@ public class ConnectionManager {
             final int pos = posToRemove; 
             this.connections.stream().filter(con -> !con.equals(connection))
                     .forEach(con -> {
-                        con.sendData(3, "" + pos);
+                try {
+                    con.sendData(3, "" + pos);
+                } catch (IOException ex) {
+                    Logger.getLogger(ConnectionManager.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
                     });
             this.connections.remove(pos);
         }
